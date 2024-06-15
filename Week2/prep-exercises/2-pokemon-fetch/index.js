@@ -17,7 +17,16 @@ const INVALID_URL = 'https://pokeapi.co/api/v2/pokemons/?limit=5';
 
 async function fetchJSON(url) {
   // TODO
-
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to fetch data: ${error.message}`);
+  }
   // Fetch the JSON data from the web API that responds to the `url` parameter
   // and return a promise that resolves to a corresponding JavaScript object.
   // Make sure to check for HTTP errors.
@@ -48,11 +57,18 @@ function renderError(err) {
 
 function main() {
   const button = document.querySelector('#button');
-  button.addEventListener('click', () => {
+  button.addEventListener('click',async () => {
     const option = document.querySelector('#option');
     const url = option.checked ? INVALID_URL : VALID_URL;
 
     // TODO
+ try{
+  const data = await fetchJSON(url);
+  renderResults(data);
+ }catch(error){
+    renderError(error);
+ }
+
     // Use `fetchJSON()` to fetch data from the selected url.
     // If successful, render the data by calling function `renderResults()`.
     // On failure, render the error by calling function `renderError()`.
